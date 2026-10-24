@@ -1,0 +1,27 @@
+on early-init
+    write /sys/module/musb_hdrc/parameters/kernel_init_done 1
+    setprop sys.usb.controller "musb-hdrc"
+    setprop vendor.usb.controller "musb-hdrc"
+
+on init
+    setprop sys.usb.configfs 1
+    setprop sys.usb.controller "musb-hdrc"
+    setprop vendor.usb.controller "musb-hdrc"
+    setprop sys.usb.ffs.aio_compat 0
+
+on fs
+    setprop sys.usb.controller "musb-hdrc"
+    setprop vendor.usb.controller "musb-hdrc"
+    start adbd
+
+on early-boot
+    # Load touch driver modules for Kernel 6.12
+    insmod /lib/modules/switch_class.ko
+    insmod /lib/modules/xiaomi.ko
+    insmod /lib/modules/ft3683g.ko
+    insmod /lib/modules/gt9916.ko
+
+on boot
+    # Backlight and display
+    write /sys/class/leds/lcd-backlight/brightness 1200
+    setprop sys.usb.config adb
